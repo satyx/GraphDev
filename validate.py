@@ -71,7 +71,7 @@ def validateConnected(obj,exception=True):
     obj.reverse()
     DFS(obj,ver,visited2)
     obj.reverse()
-    print(visited1,visited2)
+    print("satyx",visited1,visited2)
     for vertex in obj.vertexList:
         if not visited1[vertex] and not visited2[vertex]:
             if exception:

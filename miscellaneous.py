@@ -18,7 +18,7 @@ def TSort(obj):
         visited[vertex] = False
 
     for vertex in obj.edgeList:
-        print("ver:",vertex)
+        #print("ver:",vertex)
         if visited[vertex]:
             continue
         visited[vertex] = True
@@ -30,6 +30,30 @@ def TSort(obj):
             TSortUtility(obj,nbrVertex,visited,stack)
         stack.append(vertex)
     return stack
+
+def ComponentsUtility(obj,vertex,visited,component):
+    visited[vertex] = True
+    component.append(vertex)
+    for nxtVertex in obj.edgeList[vertex]:
+        if visited[nxtVertex]:
+            continue
+        ComponentsUtility(obj,nxtVertex,visited,component)
+
+
+def Components(obj):
+    visited = dict()
+    ComponentList = []
+
+    for ver in obj.vertexList:
+        visited[ver] = False
+
+    for vertex in obj.vertexList:
+        component = []
+        if not visited[vertex]:
+            ComponentsUtility(obj,vertex,visited,component)
+            ComponentList.append(component)
+    return ComponentList
+
 
 
 """def MSTPrim(obj):

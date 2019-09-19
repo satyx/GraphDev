@@ -22,10 +22,11 @@ class Graph:
             
     def unDirectional(self):
         unGraph = uniGraph(self.vertexList,self.edgeList,self.weightList)
-        self.vertexList = unGraph.vertexList
-        self.edgeList = unGraph.edgeList
-        self.weightList = unGraph.weightList
-        del unGraph
+        return unGraph
+        #self.vertexList = unGraph.vertexList
+        #self.edgeList = unGraph.edgeList
+        #self.weightList = unGraph.weightList
+        #del unGraph
 
     def reverse(self):
     	newEdgeList = dict()
@@ -126,10 +127,11 @@ class uniGraph(Graph):
                 
                 
 #x = Graph([1,2,3,5,4,4],{1:[2,3],2:[3,5],3:[4,5],4:[5]},{1:[5,1],2:[5,1]})
-x = Graph([0,1,2,3,4,5],{2:[1],3:[1],4:[2,0],5:[3]})
-print(x.edgeList,x.weightList)
-x.reverse()
+#x = Graph([0,1,2,3,4,5,6],{2:[1],3:[1],4:[2,0],5:[3]})
+#print(x.edgeList,x.weightList)
+#x.reverse()
 #print(x.edgeList,x.weightList) 
-print(DFS(x,2))
-print(TSort(x))
-validateConnected(x)
+#print(DFS(x,2))
+#print(TSort(x))
+#validateConnected(x)
+#print("Components:",len(Components(x.unDirectional())))
