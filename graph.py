@@ -2,6 +2,7 @@ import numbers
 from validate import *
 from traversal import *
 from miscellaneous import *
+from properties import *
 
 class Graph:
 
@@ -126,7 +127,8 @@ class uniGraph(Graph):
                     pass
                 
                 
-#x = Graph([1,2,3,5,4,4],{1:[2,3],2:[3,5],3:[4,5],4:[5]},{1:[5,1],2:[5,1]})
+#x = Graph([1,2,3,5,4,4],{1:[2,3],2:[3,5],3:[4,5],4:[3,5]},{1:[5,1],2:[5,1]})
+#print(CountRegions(x))
 #x = Graph([0,1,2,3,4,5,6],{2:[1],3:[1],4:[2,0],5:[3]})
 #print(x.edgeList,x.weightList)
 #x.reverse()
