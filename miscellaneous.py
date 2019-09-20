@@ -1,7 +1,7 @@
 from validate import *
 
 def TSortUtility(obj,vertex,visited,stack):
-    for nbrVertex in obj.edgeList[vertex]:
+    for nbrVertex in obj.adjList[vertex]:
         if visited[nbrVertex]:
             continue
         visited[nbrVertex] = True
@@ -17,13 +17,13 @@ def TSort(obj):
     for vertex in obj.vertexList:
         visited[vertex] = False
 
-    for vertex in obj.edgeList:
+    for vertex in obj.adjList:
         #print("ver:",vertex)
         if visited[vertex]:
             continue
         visited[vertex] = True
         
-        for nbrVertex in obj.edgeList[vertex]:
+        for nbrVertex in obj.adjList[vertex]:
             if visited[nbrVertex]:
                 continue
             visited[nbrVertex] = True
@@ -31,28 +31,7 @@ def TSort(obj):
         stack.append(vertex)
     return stack
 
-def ComponentsUtility(obj,vertex,visited,component):
-    visited[vertex] = True
-    component.append(vertex)
-    for nxtVertex in obj.edgeList[vertex]:
-        if visited[nxtVertex]:
-            continue
-        ComponentsUtility(obj,nxtVertex,visited,component)
 
-
-def Components(obj):
-    visited = dict()
-    ComponentList = []
-
-    for ver in obj.vertexList:
-        visited[ver] = False
-
-    for vertex in obj.vertexList:
-        component = []
-        if not visited[vertex]:
-            ComponentsUtility(obj,vertex,visited,component)
-            ComponentList.append(component)
-    return ComponentList
 
 
 

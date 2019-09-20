@@ -3,14 +3,14 @@ from validate import *
 def DFSUtility(obj,vertex,visited,subGraph):
     visited[vertex] = True
     subGraph.append(vertex)
-    for nxtVertex in obj.edgeList[vertex]:
+    for nxtVertex in obj.adjList[vertex]:
         if visited[nxtVertex]:
             continue
         DFSUtility(obj,nxtVertex,visited,subGraph)
 
 def DFS(obj,vertex,visited=dict()):
     validateVertex(vertex,obj.vertexList)
-    order = []
+    #order = []
     #visited = dict()
     subGraph= []
     for ver in obj.vertexList:
@@ -36,7 +36,7 @@ def BFSUtility(obj,visited,vertex):
     visited[vertex] = True
     while(stack):
         subGraph.append(stack.pop())
-        for nbrVertex in obj.edgeList[subGraph[-1]]:
+        for nbrVertex in obj.adjList[subGraph[-1]]:
             if visited[nbrVertex]:
                 continue
             stack.insert(0,nbrVertex)

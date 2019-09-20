@@ -1,7 +1,7 @@
 def ComponentsUtility(obj,vertex,visited,component):
     visited[vertex] = True
     component.append(vertex)
-    for nxtVertex in obj.edgeList[vertex]:
+    for nxtVertex in obj.adjList[vertex]:
         if visited[nxtVertex]:
             continue
         ComponentsUtility(obj,nxtVertex,visited,component)
@@ -29,9 +29,9 @@ def EdgeList(obj,undirectional = True):
     for vertex in obj.vertexList:
         visited[vertex] = False
     edges = []
-    for vertex in obj.edgeList:
+    for vertex in obj.adjList:
         visited[vertex] = True
-        for nbrVertex in obj.edgeList[vertex]:
+        for nbrVertex in obj.adjList[vertex]:
             if undirectional:
                 if not visited[nbrVertex]:
                     edges.append((vertex,nbrVertex))

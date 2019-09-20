@@ -14,7 +14,7 @@ def validateEdge(v1,v2,w,vertexList,comment=""):
 
 
 def validateCyclicUtility(obj,vertex,visited,stack):
-    for nbrVertex in obj.edgeList[vertex]:
+    for nbrVertex in obj.adjList[vertex]:
         if stack[nbrVertex]:
             return True
         if visited[nbrVertex]:
@@ -44,9 +44,9 @@ def validateCyclic(obj):
     return False
 
 def validateDirected(obj):
-    for vertex in obj.edgeList:
-        for nbrVertex in obj.edgeList[vertex]:
-            if vertex in obj.edgeList[nbrVertex]:
+    for vertex in obj.adjList:
+        for nbrVertex in obj.adjList[vertex]:
+            if vertex in obj.adjList[nbrVertex]:
                 return False
     return True             
 
@@ -71,7 +71,7 @@ def validateConnected(obj,exception=True):
     obj.reverse()
     DFS(obj,ver,visited2)
     obj.reverse()
-    print("satyx",visited1,visited2)
+    #print("satyx",visited1,visited2)
     for vertex in obj.vertexList:
         if not visited1[vertex] and not visited2[vertex]:
             if exception:
