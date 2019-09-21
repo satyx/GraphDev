@@ -1,15 +1,28 @@
 import numbers
-def validateVertex(vertex,vertexList,comment=""):
-        if vertex not in vertexList:
+import warnings
+def validateVertex(vertex,vertexList,comment="",exception = True,warning=False):
+    if vertex not in vertexList:
+        if warning:
+            warnings.warn("Invalid vertex {}.{}".format(vertex,comment))
+        elif exception:
             raise Exception("Invalid vertex {}.{}".format(vertex,comment))
-def validateWeight(w,comment=""):
+        else:
+            return False
+    return True
+def validateWeight(w,comment="",exception = True,warning=False):
     if not (isinstance(w,numbers.Number)):
-        raise Exception("Invalid Weight. {}".format(comment))
+        if warning:
+            warnings.warn("Invalid Weight. {}".format(comment))
+        elif exception:
+            raise Exception("Invalid Weight. {}".format(comment))
+        else:
+            return False
+        return True
 
-def validateEdge(v1,v2,w,vertexList,comment=""):
-    validateVertex(v1,vertexList,comment)
-    validateVertex(v2,vertexList,comment)
-    validateWeight(w,comment)
+def validateEdge(v1,v2,w,vertexList,comment="",exception = True,warning=False):
+    validateVertex(v1,vertexList,comment,exception = exception, warning = warning )
+    validateVertex(v2,vertexList,comment,exception = exception, warning = warning)
+    validateWeight(w,comment,exception = exception, warning = warning)
 
 
 
@@ -27,7 +40,7 @@ def validateCyclicUtility(obj,vertex,visited,stack):
     return False
 
 
-def validateCyclic(obj):
+def validateCyclic(obj,exception = True,warning=False):
     stack = dict()
     visited = dict()
     for vertex in obj.vertexList:
@@ -43,24 +56,30 @@ def validateCyclic(obj):
         stack[vertex] = False
     return False
 
-def validateDirected(obj):
+def validateDirected(obj,exception = True,warning=False):
     for vertex in obj.adjList:
         for nbrVertex in obj.adjList[vertex]:
             if vertex in obj.adjList[nbrVertex]:
                 return False
     return True             
 
-def validateTSort(obj):
+def validateTSort(obj,exception = True,warning=False):
     if validateCyclic(obj):							#To detect self loop this validation has been kept prior to validateDirected
-         raise Exception("The Graph is Cyclic")
+        if warning:
+            warnings.warn("The Graph is Cyclic")
+        elif exception:
+            raise Exception("The Graph is Cyclic")
     if not validateDirected(obj):
-        raise Exception("The Graph is Non Directed")
+        if warning:
+            warnings.warn("The Graph is Non Directed")
+        elif exception:
+            raise Exception("The Graph is Non Directed")
 
 
 
 
 from traversal import DFS
-def validateConnected(obj,exception=True):
+def validateConnected(obj,exception = True,warning=False):
     visited1 = dict()
     visited2 = dict()
     for vertex in obj.vertexList:
@@ -74,15 +93,19 @@ def validateConnected(obj,exception=True):
     #print("satyx",visited1,visited2)
     for vertex in obj.vertexList:
         if not visited1[vertex] and not visited2[vertex]:
-            if exception:
+            if warning:
+                warnings.warn("Disconnected Graph")
+            elif exception:
                 raise Exception("Disconnected Graph")
             else:
                 return False
     return True
                 
-def validateWeaklyConnected(obj,exception=True):
+def validateWeaklyConnected(obj,exception = True,warning=False):
     if not validateConnected(obj.unDirectional(),False):
-        if exception:
+        if warning:
+            warnings.warn("NOT a Weakly Connected Graph")
+        elif exception:
             raise Exception("NOT a Weakly Connected Graph")
         else:
             return False
