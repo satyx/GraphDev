@@ -40,7 +40,7 @@ def validateCyclicUtility(obj,vertex,visited,stack):
     return False
 
 
-def validateCyclic(obj,exception = True,warning=False):
+def validateCyclic(obj,comment="",exception = True,warning=False):
     stack = dict()
     visited = dict()
     for vertex in obj.vertexList:
@@ -51,10 +51,15 @@ def validateCyclic(obj,exception = True,warning=False):
             continue
         visited[vertex] = True
         stack[vertex] = True
-        if validateCyclicUtility(obj,vertex,visited,stack):
-            return True
+        if not validateCyclicUtility(obj,vertex,visited,stack):
+            if warning:
+                warnings.warn("Not a Cyclic Graph.{}".format(comment))
+            elif exception:
+                raise Exception("Not a Cyclic Graph.{}".format(comment))
+            else:
+                return False
         stack[vertex] = False
-    return False
+    return True
 
 def validateDirected(obj,comment="",exception = True,warning=False):
     for vertex in obj.adjList:
@@ -69,7 +74,7 @@ def validateDirected(obj,comment="",exception = True,warning=False):
     return True             
 
 def validateTSort(obj,comment="",exception = True,warning=False):
-    if validateCyclic(obj):							#To detect self loop this validation has been kept prior to validateDirected
+    if validateCyclic(obj,exception=False):							#To detect self loop this validation has been kept prior to validateDirected
         if warning:
             warnings.warn("The Graph is Cyclic.{}".format(comment))
         elif exception:
