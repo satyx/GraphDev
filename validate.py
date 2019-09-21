@@ -56,24 +56,29 @@ def validateCyclic(obj,exception = True,warning=False):
         stack[vertex] = False
     return False
 
-def validateDirected(obj,exception = True,warning=False):
+def validateDirected(obj,comment="",exception = True,warning=False):
     for vertex in obj.adjList:
         for nbrVertex in obj.adjList[vertex]:
             if vertex in obj.adjList[nbrVertex]:
-                return False
+                if warning:
+                    warnings.warn("Not Directed Graph.{}".format(comment))
+                elif exception:
+                    raise Exception("Not Directed Graph.{}".format(comment))
+                else:
+                    return False
     return True             
 
-def validateTSort(obj,exception = True,warning=False):
+def validateTSort(obj,comment="",exception = True,warning=False):
     if validateCyclic(obj):							#To detect self loop this validation has been kept prior to validateDirected
         if warning:
-            warnings.warn("The Graph is Cyclic")
+            warnings.warn("The Graph is Cyclic.{}".format(comment))
         elif exception:
-            raise Exception("The Graph is Cyclic")
-    if not validateDirected(obj):
+            raise Exception("The Graph is Cyclic.{}".format(comment))
+    if not validateDirected(obj,exception=False):
         if warning:
-            warnings.warn("The Graph is Non Directed")
+            warnings.warn("The Graph is Non Directed.{}".format(comment))
         elif exception:
-            raise Exception("The Graph is Non Directed")
+            raise Exception("The Graph is Non Directed.{}"..format(comment))
 
 
 
