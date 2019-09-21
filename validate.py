@@ -78,5 +78,13 @@ def validateConnected(obj,exception=True):
                 raise Exception("Disconnected Graph")
             else:
                 return False
-    return True            
-        
+    return True
+                
+def validateWeaklyConnected(obj,exception=True):
+    if not validateConnected(obj.unDirectional(),False):
+        if exception:
+            raise Exception("NOT a Weakly Connected Graph")
+        else:
+            return False
+    return True
+    
