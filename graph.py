@@ -125,6 +125,10 @@ class Graph:
             
 
 class uniGraph(Graph):
+    def addEdge(self,i,j,weight=0):
+        super().addEdge(i,j,weight)
+        super().addEdge(j,i,weight)
+
     def __init__(self,vertexList=set(),adjList=dict(),weightList=dict()):
         self.vertexList = set(vertexList)
         self.adjList = dict()
@@ -144,7 +148,7 @@ class uniGraph(Graph):
         for vertex,neighborhood in adjList.items():
             for nbrVertex in neighborhood:
                 self.addEdge(vertex,nbrVertex,0)
-                self.addEdge(nbrVertex,vertex,0)
+                #self.addEdge(nbrVertex,vertex,0)
                 self.edgeCount += 1
                 try:
                     assert weightList[vertex][adjList[vertex].index(nbrVertex)]==weightList[nbrVertex][adjList[nbrVertex].index(vertex)]
@@ -152,10 +156,9 @@ class uniGraph(Graph):
                     print("v1:",vertex,", v2:",nbrVertex)
                     print("w1:",weightList[vertex][adjList[vertex].index(nbrVertex)]," ,w2:",weightList[nbrVertex][adjList[nbrVertex].index(vertex)])
                     raise Exception("Ambiguous Weight List")
+                except KeyError:
+                    print("hi","neglecting an error")
 
-                except:
-                    print("neglecting an error")
-                    pass    
         for vertex in self.vertexList:
             if vertex not in self.adjList:
                 self.adjList[vertex]=[]
@@ -166,18 +169,44 @@ class uniGraph(Graph):
                     raise Exception("Invalid Weight List corresponding to vertex {}".format(vertex))
         except:
             raise Exception("Invalid Weight List corresponding to vertex {}".format(vertex))        
-        print(adjList)
-        for vertex,neighborhood in adjList.items():
+        #print("check",self.adjList,weightList)
+
+        for vertex,neighborhood in self.adjList.items():
             for nbrVertex in neighborhood:
+                
                 ind_vertex = self.adjList[nbrVertex].index(vertex)
                 ind_nbrVertex = self.adjList[vertex].index(nbrVertex)
-                w = weightList[vertex][adjList[vertex].index(nbrVertex)]
+                try:
+                    w = weightList[vertex][self.adjList[vertex].index(nbrVertex)]
+                except:
+                    try:
+                        w = weightList[nbrVertex][self.adjList[nbrVertex].index(vertex)]
+                    except:
+                        w=0
                 try:
                     self.weightList[vertex][ind_nbrVertex] =  w
                     self.weightList[nbrVertex][ind_vertex] =  w
                 except:
-                    print("neglecting an error")
+                    #print("neglecting an error")
                     pass
+        for vertex,neighborhood in self.adjList.items():
+            loop_var = 0
+            while(loop_var<len(self.weightList[vertex])-1):
+                swapped = False
+                pos = 0
+                
+                while(pos<len(self.weightList[vertex])-1-loop_var):
+                    if(self.weightList[vertex][pos]>self.weightList[vertex][pos+1]):
+                        self.weightList[vertex][pos],self.weightList[vertex][pos+1] = self.weightList[vertex][pos+1],self.weightList[vertex][pos]
+                        self.adjList[vertex][pos],self.adjList[vertex][pos+1] = self.adjList[vertex][pos+1],self.adjList[vertex][pos]
+                        swapped = True
+                    pos+=1
+
+                if not swapped:
+                    break
+                loop_var += 1
+
+
 
 
 
@@ -186,18 +215,21 @@ class uniGraph(Graph):
                 
                 
 x = Graph([1,2,3,5,4],{1:[2,3],2:[1],4:[5]},{1:[5,1],2:[5]})
+x.addEdge(2,5)
 #x.addEdge(1,2,8)
 #print(CountRegions(x))
 #x = Graph([0,1,2,3,4,5],{2:[1],3:[1],4:[2,0],5:[3]})
+#print(x.adjList,x.weightList)
+#print(x.adjList)
+#x.reverse()
 print(x.adjList,x.weightList)
-print(x.adjList)
-x.reverse()
-print(x.adjList)
 
-print(x.adjList,x.weightList) 
-print(DFS(x,2))
+#print(x.adjList,x.weightList) 
+#print(DFS(x,2))
 #print(TSort(x))
 
 #validateTSort(x,exception=False,warning=True)
-print(x.adjList)
-print("Components:",len(Components(x.unDirectional())))
+#print(x.adjList)
+#print("Components:",len(Components(x.unDirectional())))
+#print("Components:",len(Components(x)))
+#print(x.adjList,x.weightList)
