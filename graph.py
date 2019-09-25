@@ -6,6 +6,9 @@ from properties import *
 
 class Graph:
 
+    def modifyWeight(self,i,j,weight=0):
+        self.addEdge(i,j,weight)
+
     def addVertex(self,ver):
         self.vertex.add(ver)
         self.vertexCount+=1
@@ -214,15 +217,16 @@ class uniGraph(Graph):
 
                 
                 
-x = Graph([1,2,3,5,4],{1:[2,3],2:[1],4:[5]},{1:[5,1],2:[5]})
-x.addEdge(2,5)
+#x = uniGraph([1,2,3,5,4],{1:[2,3],2:[1],4:[5]},{1:[5,1],2:[5]})
+#x.addEdge(2,5)
+#x.modifyWeight(2,1,10)
 #x.addEdge(1,2,8)
 #print(CountRegions(x))
 #x = Graph([0,1,2,3,4,5],{2:[1],3:[1],4:[2,0],5:[3]})
 #print(x.adjList,x.weightList)
 #print(x.adjList)
 #x.reverse()
-print(x.adjList,x.weightList)
+#print(x.adjList,x.weightList)
 
 #print(x.adjList,x.weightList) 
 #print(DFS(x,2))
