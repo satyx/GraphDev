@@ -8,15 +8,38 @@ class Graph:
 
     def addVertex(self,ver):
         self.vertex.add(ver)
+        self.vertexCount+=1
 
     def addEdge(self,i,j,weight=0):
         validateEdge(i,j,weight,self.vertexList,"Check the Edge List")
         try:
-            if j not in self.adjList[i]:
-                self.adjList[i].append(j)
-                self.weightList[i].append(weight)
-            else:
-                self.weightList[i][self.adjList[i].index(j)] = weight
+            try:
+                if j in self.adjList[i]:
+                    pos  = self.adjList[i].index(j)
+                    del self.adjList[i][pos]
+                    del self.weightList[i][pos]
+            finally:
+                if len(self.weightList[i])==0 or weight>self.weightList[i][-1]:
+                    self.weightList[i].append(weight)
+                    self.adjList[i].append(j)
+                else:
+                    l=0
+                    r = len(self.weightList[i])-1
+                    while(l<=r):
+                        mid = (l+r)//2
+                        if self.weightList[i][mid] == weight:
+                            break
+                        elif self.weightList[i][mid]<weight:
+                            r = mid - 1
+                        else:
+                            l = mid + 1
+                    if (self.weightList[i][mid]<=weight):
+                        self.weightList[i].insert(mid,weight)
+                        self.adjList[i].insert(mid,j)
+                    else:
+                        self.weightList[i].insert(mid+1,weight)
+                        self.adjList[i].insert(mid+1,j)
+            
         except KeyError:
             self.adjList[i] = list([j])
             self.weightList[i] = list([0])
@@ -30,28 +53,30 @@ class Graph:
         #del unGraph
 
     def reverse(self):
-        newAdjList = dict()
-        newWeightList = dict()
-        for vertex in self.adjList:
-            newWeightList[vertex] = []
-        for vertex in self.vertexList:
-            newAdjList[vertex] = []
+        tempAdjList = self.adjList.copy()
+        tempWeightList = self.weightList.copy()
 
-        for vertex in self.adjList:
-            for (index,nbrVertex) in enumerate(self.adjList[vertex]):
-                newAdjList[nbrVertex].append(vertex)
-                newWeightList[nbrVertex].append(self.weightList[vertex][index])
-        self.adjList = newAdjList
-        self.weightList = newWeightList
-        del newAdjList
-        del newWeightList
+        for vertex in self.vertexList:
+            self.weightList[vertex] = []
+        for vertex in self.vertexList:
+            self.adjList[vertex] = []
+
+        for vertex in tempAdjList:
+            for (index,nbrVertex) in enumerate(tempAdjList[vertex]):
+                self.addEdge(nbrVertex,vertex,tempWeightList[vertex][index])
+                self.addEdge(vertex,nbrVertex,tempWeightList[vertex][index])
+        del tempAdjList
+        del tempWeightList
         
         
 
     def __init__(self,vertexList=set(),adjList=dict(),weightList=dict()):
         self.vertexList = set(vertexList)
+        self.vertexCount = len(self.vertexList)
+
         for vertex, neighborhood in adjList.items():
             adjList[vertex] = list(set(neighborhood))
+
 
 
         for vertex in self.vertexList:
@@ -77,9 +102,26 @@ class Graph:
         self.weightList = dict()
         for vertex in adjList.keys():
             self.weightList[vertex] = [0 for conVertex in adjList[vertex]]
-        for vertex in weightList.keys():
+
+
+
+        for vertex in weightList:
             for (index,weight) in enumerate(weightList[vertex]):
                 self.weightList[vertex][index] = weight
+
+            for loop_index in range(len(self.weightList[vertex])-1):
+                swapped = False
+                pos=0
+                for pos in range(len(self.weightList[vertex])-1-loop_index):
+                    if self.weightList[vertex][pos]>self.weightList[vertex][pos+1]:
+                        self.weightList[vertex][pos],self.weightList[vertex][pos+1] = self.weightList[vertex][pos+1],self.weightList[vertex][pos] #Swap
+                        self.adjList[vertex][pos],self.adjList[vertex][pos+1] = self.adjList[vertex][pos+1], self.adjList[vertex][pos]
+                        swapped = True
+                if not swapped:
+                    break
+
+
+
             
 
 class uniGraph(Graph):
@@ -88,7 +130,6 @@ class uniGraph(Graph):
         self.adjList = dict()
         self.weightList = dict()
         self.edgeCount = 0
-        self.vertexCount = len(self.vertexList)
         
         for (vertex,neighborhood) in adjList.items():
             validateVertex(vertex,self.vertexList)
@@ -108,14 +149,16 @@ class uniGraph(Graph):
                 try:
                     assert weightList[vertex][adjList[vertex].index(nbrVertex)]==weightList[nbrVertex][adjList[nbrVertex].index(vertex)]
                 except AssertionError:
+                    print("v1:",vertex,", v2:",nbrVertex)
+                    print("w1:",weightList[vertex][adjList[vertex].index(nbrVertex)]," ,w2:",weightList[nbrVertex][adjList[nbrVertex].index(vertex)])
                     raise Exception("Ambiguous Weight List")
+
                 except:
+                    print("neglecting an error")
                     pass    
         for vertex in self.vertexList:
-            if vertex not in self.adjList.keys():
+            if vertex not in self.adjList:
                 self.adjList[vertex]=[]
-
-
 
         try:
             for vertex,nbrWeightList in weightList.items():
@@ -123,24 +166,38 @@ class uniGraph(Graph):
                     raise Exception("Invalid Weight List corresponding to vertex {}".format(vertex))
         except:
             raise Exception("Invalid Weight List corresponding to vertex {}".format(vertex))        
+        print(adjList)
         for vertex,neighborhood in adjList.items():
             for nbrVertex in neighborhood:
                 ind_vertex = self.adjList[nbrVertex].index(vertex)
                 ind_nbrVertex = self.adjList[vertex].index(nbrVertex)
+                w = weightList[vertex][adjList[vertex].index(nbrVertex)]
                 try:
-                    self.weightList[vertex][ind_nbrVertex] =  weightList[vertex][adjList[vertex].index(nbrVertex)]
-                    self.weightList[nbrVertex][ind_vertex] =  weightList[vertex][adjList[vertex].index(nbrVertex)]
+                    self.weightList[vertex][ind_nbrVertex] =  w
+                    self.weightList[nbrVertex][ind_vertex] =  w
                 except:
+                    print("neglecting an error")
                     pass
+
+
+
+#def sortWeight(obj):
+
                 
                 
-#x = Graph([1,2,3,5,4,4],{1:[2,3],2:[3,5],3:[4,5],4:[3,5]},{1:[5,1],2:[5,1]})
+x = Graph([1,2,3,5,4],{1:[2,3],2:[1],4:[5]},{1:[5,1],2:[5]})
+#x.addEdge(1,2,8)
 #print(CountRegions(x))
 #x = Graph([0,1,2,3,4,5],{2:[1],3:[1],4:[2,0],5:[3]})
-#print(x.adjList,x.weightList)
-#x.reverse()
-#print(x.adjList,x.weightList) 
-#print(DFS(x,2))
+print(x.adjList,x.weightList)
+print(x.adjList)
+x.reverse()
+print(x.adjList)
+
+print(x.adjList,x.weightList) 
+print(DFS(x,2))
 #print(TSort(x))
-#validateWeaklyConnected(x)
-#print("Components:",len(Components(x.unDirectional())))
+
+#validateTSort(x,exception=False,warning=True)
+print(x.adjList)
+print("Components:",len(Components(x.unDirectional())))

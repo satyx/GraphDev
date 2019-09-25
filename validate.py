@@ -83,7 +83,7 @@ def validateTSort(obj,comment="",exception = True,warning=False):
         if warning:
             warnings.warn("The Graph is Non Directed.{}".format(comment))
         elif exception:
-            raise Exception("The Graph is Non Directed.{}"..format(comment))
+            raise Exception("The Graph is Non Directed.{}".format(comment))
 
 
 
