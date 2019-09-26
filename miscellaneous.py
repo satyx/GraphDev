@@ -42,20 +42,28 @@ def MSTKruskal(obj):
     validateConnected(obj)
     validateUndirected(obj)
 
-    def Cycle(edge,parent):               #Nested Function
-        def fparent(parent,vertex):
-            if parent[vertex]==-1:
-                return vertex
-            return fparent(parent,parent[vertex])
 
-        if fparent(parent,edge[0])==fparent(parent,edge[1]):
+    def find(parent,vertex):
+        if parent[vertex]==vertex:
+            return vertex
+        return find(parent,parent[vertex])
+    def union(parent, rank, x, y): 
+        xroot = find(parent, x) 
+        yroot = find(parent, y)
+        
+        if rank[xroot] < rank[yroot]: 
+            parent[xroot] = yroot 
+        else:
+            parent[yroot] = xroot
+
+    def Cycle(edge,parent):
+        if find(parent,edge[0])==find(parent,edge[1]):
             return True
-        if parent[edge[1]]==-1:
-            parent[edge[1]] = edge[0]
+        if parent[edge[1]]==edge[1]:
+            parent[edge[1]] = edge[1]
         else:
             parent[edge[0]] = edge[1]
         return False
-    
 
     graph = []
     for vertex in obj.adjList:
@@ -66,15 +74,28 @@ def MSTKruskal(obj):
 
 
     parent = dict()
+    rank = dict()
     for edge in graph:
-        parent[edge[0]] = -1
-        parent[edge[1]] = -1
+        parent[edge[0]] = edge[0]
+        parent[edge[1]] = edge[1]
+        rank[edge[0]] = 0
+        rank[edge[1]] = 0
 
     MST = []
-    for edge in graph:
-        MST.append(edge)
-        if Cycle(edge,parent):
-            MST.pop()
+    graph_itr = 0
+    mst_itr = 0
+
+    while mst_itr < len(obj.vertexList) -1 :
+        vertex1,vertex2,weight =  graph[graph_itr] 
+        graph_itr += 1
+        pVertex1 = find(parent, vertex1) 
+        pVertex2 = find(parent ,vertex2)
+
+        if pVertex1 != pVertex2: 
+            mst_itr += 1
+            MST.append((vertex1,vertex2,weight))
+            union(parent, rank, pVertex1, pVertex2) 
+    
     return MST
 
 """def MST(obj,algo="Prim"):
