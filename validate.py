@@ -121,3 +121,21 @@ def validateWeaklyConnected(obj,exception = True,warning=False):
             return False
     return True
     
+
+def validateUndirected(obj,comment="",exception = True, warning = False):
+    unDir = True
+    for vertex in obj.adjList:
+        for nbrVertex in obj.adjList[vertex]:
+            if vertex not in obj.adjList[nbrVertex]:
+                unDir = False
+                break
+        if not unDir:
+            break
+    if not unDir:
+        if warning:
+            warnings.warn("The Graph is NOT undirected.{}".format(comment))
+        elif exception:
+            raise Exception("The Graph is NOT undirected.{}".format(comment))
+        else:
+            return False
+    return True
