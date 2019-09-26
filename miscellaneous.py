@@ -42,25 +42,18 @@ def MSTKruskal(obj):
     validateConnected(obj)
     validateUndirected(obj)
 
-    def Cycle(graph,parent,):               #Nested Function
+    def Cycle(edge,parent):               #Nested Function
         def fparent(parent,vertex):
             if parent[vertex]==-1:
                 return vertex
             return fparent(parent,parent[vertex])
 
-
-        detected = False    
-
-        for edge in graph[-1:]:
-            if fparent(parent,edge[0])==fparent(parent,edge[1]):
-                detected = True
-                break
-            if parent[edge[1]]==-1:
-                parent[edge[1]] = edge[0]
-            else:
-                parent[edge[0]] = edge[1]
-        if detected:
+        if fparent(parent,edge[0])==fparent(parent,edge[1]):
             return True
+        if parent[edge[1]]==-1:
+            parent[edge[1]] = edge[0]
+        else:
+            parent[edge[0]] = edge[1]
         return False
     
 
@@ -80,7 +73,7 @@ def MSTKruskal(obj):
     MST = []
     for edge in graph:
         MST.append(edge)
-        if Cycle(MST,parent):
+        if Cycle(edge,parent):
             MST.pop()
     return MST
 
