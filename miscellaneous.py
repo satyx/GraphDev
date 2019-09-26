@@ -35,14 +35,56 @@ def TSort(obj):
 
 
 
-"""def MSTPrim(obj):
+"""def MSTPrim(obj):"""
 
 
-def MSTKruskal():
+def MSTKruskal(obj):
+    validateConnected(obj)
+    validateUndirected(obj)
+
+    def Cycle(graph,parent,):               #Nested Function
+        def fparent(parent,vertex):
+            if parent[vertex]==-1:
+                return vertex
+            return fparent(parent,parent[vertex])
 
 
+        detected = False    
 
-def MST(obj,algo="Prim"):
+        for edge in graph[-1:]:
+            if fparent(parent,edge[0])==fparent(parent,edge[1]):
+                detected = True
+                break
+            if parent[edge[1]]==-1:
+                parent[edge[1]] = edge[0]
+            else:
+                parent[edge[0]] = edge[1]
+        if detected:
+            return True
+        return False
+    
+
+    graph = []
+    for vertex in obj.adjList:
+        for index,nbrVertex in enumerate(obj.adjList[vertex]):
+            if (vertex,nbrVertex,obj.weightList[vertex][index]) not in graph and (nbrVertex,vertex,obj.weightList[vertex][index]) not in graph:
+                graph.append((vertex,nbrVertex,obj.weightList[vertex][index]))
+        sorted(graph,key=lambda item: item[1])
+
+
+    parent = dict()
+    for edge in graph:
+        parent[edge[0]] = -1
+        parent[edge[1]] = -1
+
+    MST = []
+    for edge in graph:
+        MST.append(edge)
+        if Cycle(MST,parent):
+            MST.pop()
+    return MST
+
+"""def MST(obj,algo="Prim"):
 	validateConnected(obj)
     algoImplemented = ["Prim","Kruskal"]
     if algo=="Prim":
