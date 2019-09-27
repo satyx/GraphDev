@@ -96,7 +96,7 @@ def MSTKruskal(obj):
             union(parent, rank, pVertex1, pVertex2) 
     return MST
 
-def Djikstra(obj,source):
+def Dijkstra(obj,source):
     validatePositiveWeight(obj)
 
     def minDistVertex(minDist,sptSet):
@@ -129,6 +129,30 @@ def Djikstra(obj,source):
                 minDist[nbrVertex] = minDist[vertex]+obj.weightList[vertex][index]
                 parent[nbrVertex] = vertex
     return minDist,parent
+
+
+def minDistance(obj):
+    n = CountVertices(obj)
+    minDist = dict()
+    for vertex in obj.vertexList:
+        minDist[vertex] = dict()
+
+
+    for vertex in obj.vertexList:
+        for nbrVertex in obj.vertexList:
+            if vertex == nbrVertex:
+                minDist[vertex][nbrVertex] = 0
+            else:
+                try:
+                    minDist[vertex][nbrVertex] = obj.weightList[vertex][obj.adjList[vertex].index(nbrVertex)]
+                except:
+                    minDist[vertex][nbrVertex] = float("inf")
+    for intermediate in obj.vertexList:
+        for source in obj.vertexList:
+            for dest in obj.vertexList:
+                if minDist[source][intermediate]+minDist[intermediate][dest]<minDist[source][dest]:
+                    minDist[source][dest] = minDist[source][intermediate]+minDist[intermediate][dest]
+    return minDist
 
 """def MST(obj,algo="Prim"):
 	validateConnected(obj)
