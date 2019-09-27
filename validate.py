@@ -139,3 +139,22 @@ def validateUndirected(obj,comment="",exception = True, warning = False):
         else:
             return False
     return True
+
+def validatePositiveWeight(obj,comment="",exception = True, warning = False):
+    detectNegative = False
+    for vertex in obj.weightList:
+        for weight in obj.weightList[vertex]:
+            if weight<0:
+                detectNegative = True
+                break
+        else:       #Executed when inner loop is not breaked
+            continue
+        break       #Executed when inner loop is breaked
+    if detectNegative:    
+        if warning:
+            warnings.warn("Graph Contains Negative Weight(s).{}".format(comment))
+        elif exception:
+            raise Exception("Graph Contains Negative Weight(s).{}".format(comment))
+        else:
+            return False
+    return True
