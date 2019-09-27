@@ -1,4 +1,5 @@
 from validate import *
+from properties import *
 
 def TSortUtility(obj,vertex,visited,stack):
     for nbrVertex in obj.adjList[vertex]:
@@ -41,7 +42,6 @@ def TSort(obj):
 def MSTKruskal(obj):
     validateConnected(obj)
     validateUndirected(obj)
-
 
     def find(parent,vertex):
         if parent[vertex]==vertex:
@@ -94,8 +94,41 @@ def MSTKruskal(obj):
             mst_itr += 1
             MST.append((vertex1,vertex2,weight))
             union(parent, rank, pVertex1, pVertex2) 
-    
     return MST
+
+def Djikstra(obj,source):
+    validatePositiveWeight(obj)
+
+    def minDistVertex(minDist,sptSet):
+        minD = float("inf")
+
+        for vertex in minDist:
+            if not sptSet[vertex] and minDist[vertex]<=minD:
+                minVertex = vertex
+                minD = minDist[vertex]
+        return minVertex
+
+
+    sptSet = dict()
+    minDist = dict()
+    parent = dict()
+    for vertex in obj.vertexList:
+        sptSet[vertex] = False
+        minDist[vertex] = float("inf")
+        parent[vertex] = vertex
+    minDist[source] = 0
+
+    SPT = []  #Shortest Path Tree (node,parent,weight)
+
+    for i in range(CountVertices(obj)):
+        vertex = minDistVertex(minDist,sptSet)
+        sptSet[vertex] = True
+        for index,nbrVertex in enumerate(obj.adjList[vertex]):
+            #print("nbr:",nbrVertex,vertex)
+            if minDist[vertex]+obj.weightList[vertex][index]<minDist[nbrVertex]:
+                minDist[nbrVertex] = minDist[vertex]+obj.weightList[vertex][index]
+                parent[nbrVertex] = vertex
+    return minDist,parent
 
 """def MST(obj,algo="Prim"):
 	validateConnected(obj)
