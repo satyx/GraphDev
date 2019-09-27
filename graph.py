@@ -47,9 +47,9 @@ class Graph:
             self.adjList[i] = list([j])
             self.weightList[i] = list([0])
             
-    def unDirectional(self):
-        unGraph = uniGraph(self.vertexList,self.adjList,self.weightList)
-        return unGraph
+    def undirected(self):
+        undirectedGraph = unGraph(self.vertexList,self.adjList,self.weightList)
+        return undirectedGraph
         #self.vertexList = unGraph.vertexList
         #self.adjList = unGraph.adjList
         #self.weightList = unGraph.weightList
@@ -107,11 +107,16 @@ class Graph:
             self.weightList[vertex] = [0 for conVertex in adjList[vertex]]
 
 
-
-        for vertex in weightList:
-            for (index,weight) in enumerate(weightList[vertex]):
-                self.weightList[vertex][index] = weight
-
+            
+        for vertex in self.adjList:
+            for (index,nbrVertex) in enumerate(self.adjList[vertex]):
+                try:
+                    self.weightList[vertex][index] = weightList[vertex][index]
+                except KeyError:    #If edge weight of (Vertex,nbrVertex) is not provided, Assign edge weight of (nbrVertex,Vertex) from #self.weightList and not from weightList
+                    try:
+                        self.weightList[vertex][index] = self.weightList[nbrVertex][self.adjList[nbrVertex].index(vertex)]
+                    except:         #When neither edgeWeight of (nbrVertex,Vertex) nor of (Vertex,nbrVertex) is provided
+                        pass        #Keep the edgeWeight of (Vertex,nbrVertex) as 0
             for loop_index in range(len(self.weightList[vertex])-1):
                 swapped = False
                 pos=0
@@ -127,7 +132,7 @@ class Graph:
 
             
 
-class uniGraph(Graph):
+class unGraph(Graph):
     def addEdge(self,i,j,weight=0):
         super().addEdge(i,j,weight)
         super().addEdge(j,i,weight)
@@ -148,9 +153,11 @@ class uniGraph(Graph):
             for nbrEdgeWeight in nbrWeightList:
                 validateWeight(nbrEdgeWeight,"Check Weight List")
 
+        
         for vertex,neighborhood in adjList.items():
             for nbrVertex in neighborhood:
                 self.addEdge(vertex,nbrVertex,0)
+                
                 #self.addEdge(nbrVertex,vertex,0)
                 self.edgeCount += 1
                 try:
@@ -159,9 +166,10 @@ class uniGraph(Graph):
                     print("v1:",vertex,", v2:",nbrVertex)
                     print("w1:",weightList[vertex][adjList[vertex].index(nbrVertex)]," ,w2:",weightList[nbrVertex][adjList[nbrVertex].index(vertex)])
                     raise Exception("Ambiguous Weight List")
-                except KeyError:
-                    print("hi","neglecting an error")
-
+                except (KeyError,ValueError):
+                    #print("hi","neglecting an error")
+                    pass
+        
         for vertex in self.vertexList:
             if vertex not in self.adjList:
                 self.adjList[vertex]=[]
@@ -180,12 +188,12 @@ class uniGraph(Graph):
                 ind_vertex = self.adjList[nbrVertex].index(vertex)
                 ind_nbrVertex = self.adjList[vertex].index(nbrVertex)
                 try:
-                    w = weightList[vertex][self.adjList[vertex].index(nbrVertex)]
-                except:
+                    w = weightList[vertex][adjList[vertex].index(nbrVertex)]    #Assign weight from adjList and not from self.adjList
+                except:         #When weight of (vertex,nbrVertex) is NOT given but weight of (vertex,nbrVertex) is given
                     try:
-                        w = weightList[nbrVertex][self.adjList[nbrVertex].index(vertex)]
+                        w = weightList[nbrVertex][adjList[nbrVertex].index(vertex)]     #Assign of (nbrVertex,vertex) corresponding to adjList and not from self.adjList.
                     except:
-                        w=0
+                        w=0     #When edgeWeight of both (vertex,nbrVertex) and (vertex,nbrVertex) is NOT provided
                 try:
                     self.weightList[vertex][ind_nbrVertex] =  w
                     self.weightList[nbrVertex][ind_vertex] =  w
@@ -208,16 +216,22 @@ class uniGraph(Graph):
                 if not swapped:
                     break
                 loop_var += 1
-
-
-
-
-
-#def sortWeight(obj):
-
                 
                 
-#x = uniGraph([1,2,3,5,4],{1:[2,3],2:[1],4:[5]},{1:[5,1],2:[5]})
+x = Graph([1,2,3,5,4],{1:[2,3,5],2:[1,4],3:[1],4:[5,2],5:[2,1]},{1:[5,1,11],2:[5,7],5:[11,0]})
+#print(x.adjList,x.weightList,"yes")
+y = x.undirected()
+print(y.adjList,y.weightList)
+
+"""print(x.adjList,x.weightList,"--")
+
+x = x.undirected()
+validatePositiveWeight(x,exception=False,warning=True)
+print(x.adjList,x.weightList,"--")
+print(MSTKruskal(x))
+Djikstra(x,1)"""
+#print(x.adjList)
+#validateUndirected(x.unDirected())
 #x.addEdge(2,5)
 #x.modifyWeight(2,1,10)
 #x.addEdge(1,2,8)
