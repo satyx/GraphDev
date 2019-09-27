@@ -65,17 +65,16 @@ def MSTKruskal(obj):
             parent[edge[0]] = edge[1]
         return False
 
-    graph = []
+    graphList = []
     for vertex in obj.adjList:
         for index,nbrVertex in enumerate(obj.adjList[vertex]):
-            if (vertex,nbrVertex,obj.weightList[vertex][index]) not in graph and (nbrVertex,vertex,obj.weightList[vertex][index]) not in graph:
-                graph.append((vertex,nbrVertex,obj.weightList[vertex][index]))
-        sorted(graph,key=lambda item: item[1])
+            if (vertex,nbrVertex,obj.weightList[vertex][index]) not in graphList and (nbrVertex,vertex,obj.weightList[vertex][index]) not in graphList:
+                graphList.append((vertex,nbrVertex,obj.weightList[vertex][index]))
 
-
+    graphList = sorted(graphList,key=lambda item: item[2])
     parent = dict()
     rank = dict()
-    for edge in graph:
+    for edge in graphList:
         parent[edge[0]] = edge[0]
         parent[edge[1]] = edge[1]
         rank[edge[0]] = 0
@@ -86,7 +85,7 @@ def MSTKruskal(obj):
     mst_itr = 0
 
     while mst_itr < len(obj.vertexList) -1 :
-        vertex1,vertex2,weight =  graph[graph_itr] 
+        vertex1,vertex2,weight =  graphList[graph_itr] 
         graph_itr += 1
         pVertex1 = find(parent, vertex1) 
         pVertex2 = find(parent ,vertex2)
