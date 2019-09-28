@@ -101,7 +101,7 @@ class Graph:
             for nbrEdgeWeight in nbrWeightList:
                 validateWeight(nbrEdgeWeight,"Check Weight List")
             if len(adjList[vertex])!=len(nbrWeightList):
-                raise Exception("Vertex list and Weight List contains different number of elements")
+                raise GraphAttributeInconsistency
 
         self.weightList = dict()
         for vertex in adjList.keys():
@@ -179,9 +179,9 @@ class unGraph(Graph):
         try:
             for vertex,nbrWeightList in weightList.items():
                 if len(nbrWeightList)> len(adjList[vertex]):
-                    raise Exception("Invalid Weight List corresponding to vertex {}".format(vertex))
+                    raise InvalidWeightList(vertex)
         except:
-            raise Exception("Invalid Weight List corresponding to vertex {}".format(vertex))        
+            raise InvalidWeightList(vertex)
         #print("check",self.adjList,weightList)
 
         for vertex,neighborhood in self.adjList.items():
@@ -220,10 +220,12 @@ class unGraph(Graph):
                 loop_var += 1
                 
                 
-#x = Graph([1,2,3,5,4,6],{1:[2,3,5],2:[1,4],3:[1],4:[5,2],5:[2,1,6]},{1:[5,1,11],2:[5,7],5:[11,0,8]})
-
+#x = Graph([1,2,3,5,4,6],{1:[2,3,5],2:[1,4],3:[4],4:[5,2],5:[2,1,6]},{1:[5,-1,11],2:[5,7],5:[11,0,8]})
+#x = Graph([1,2,3],{1:[2,3],2:[1],3:[1]},{1:[5,7],3:[7]})
+#x = Graph([1,2,3],{1:[2],2:[3]},{1:[4]})
+#print(minDistance(x,1,2))
 #print(x.weightList)
-#validateWeaklyConnected(x)
+#validateGraph(x)
 #minD = minDistance(x,1,4)
 #print(minD)
 """for vertex in x.vertexList:
