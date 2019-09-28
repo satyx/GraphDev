@@ -33,12 +33,6 @@ def TSort(obj):
     return stack
 
 
-
-
-
-"""def MSTPrim(obj):"""
-
-
 def MSTKruskal(obj):
     validateConnected(obj)
     validateUndirected(obj)
@@ -131,7 +125,31 @@ def Dijkstra(obj,source):
     return minDist,parent
 
 
-def minDistance(obj):
+def bellmanFord(obj,source):
+    validatePositiveWeight(obj)
+    n = CountVertices(obj)
+    minDist = dict()
+    for vertex in obj.vertexList:
+        if vertex == source:
+            minDist[vertex] = 0
+        else:
+            minDist[vertex] = float("inf")
+
+    for i in range(n-1):
+        for vertex in obj.adjList:
+            for nbrVertex in obj.adjList[vertex]:
+                if minDist[nbrVertex]>minDist[vertex]+obj.weightList[vertex][obj.adjList[vertex].index(nbrVertex)]:
+                    minDist[nbrVertex] = minDist[vertex]+obj.weightList[vertex][obj.adjList[vertex].index(nbrVertex)]
+    return minDist
+
+def minDistance(obj,source=None,dest=None):
+    if validatePositiveWeight(obj,exception=False):
+        if source!=None:
+            minD,_ = Dijkstra(obj,source)
+            if dest!=None:
+                return minD[dest]
+            return minD
+        
     n = CountVertices(obj)
     minDist = dict()
     for vertex in obj.vertexList:
@@ -152,14 +170,9 @@ def minDistance(obj):
             for dest in obj.vertexList:
                 if minDist[source][intermediate]+minDist[intermediate][dest]<minDist[source][dest]:
                     minDist[source][dest] = minDist[source][intermediate]+minDist[intermediate][dest]
+    print(minDist)
+    if source!=None:
+        if dest!=None:
+            return minDist[source][dest]
+        return minDist[source]
     return minDist
-
-"""def MST(obj,algo="Prim"):
-	validateConnected(obj)
-    algoImplemented = ["Prim","Kruskal"]
-    if algo=="Prim":
-        return MSTPrim(obj)
-    else if algo=="Kruskal":
-        return MSTKruskal(obj)
-    else:
-        raise Exception("Argument algo can only take values from {}".format(algoImplemented))"""
