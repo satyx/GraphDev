@@ -3,6 +3,7 @@ from validate import *
 from traversal import *
 from miscellaneous import *
 from properties import *
+from errors import *
 
 class Graph:
 
@@ -165,7 +166,7 @@ class unGraph(Graph):
                 except AssertionError:
                     print("v1:",vertex,", v2:",nbrVertex)
                     print("w1:",weightList[vertex][adjList[vertex].index(nbrVertex)]," ,w2:",weightList[nbrVertex][adjList[nbrVertex].index(vertex)])
-                    raise Exception("Ambiguous Weight List")
+                    raise AmbiguousWeightList
                 except (KeyError,ValueError):
                     #print("hi","neglecting an error")
                     pass
@@ -173,6 +174,7 @@ class unGraph(Graph):
         for vertex in self.vertexList:
             if vertex not in self.adjList:
                 self.adjList[vertex]=[]
+                self.weightList[vertex] = []
 
         try:
             for vertex,nbrWeightList in weightList.items():
@@ -218,18 +220,32 @@ class unGraph(Graph):
                 loop_var += 1
                 
                 
-x = Graph([1,2,3,5,4],{1:[2,3,5],2:[1,4],3:[1],4:[5,2],5:[2,1]},{1:[5,1,11],2:[5,7],5:[11,0]})
+#x = Graph([1,2,3,5,4,6],{1:[2,3,5],2:[1,4],3:[1],4:[5,2],5:[2,1,6]},{1:[5,1,11],2:[5,7],5:[11,0,8]})
+
+#print(x.weightList)
+#validateWeaklyConnected(x)
+#minD = minDistance(x,1,4)
+#print(minD)
+"""for vertex in x.vertexList:
+    mind = bellmanFord(x,vertex)
+    if mind == minD[vertex]:
+        print(vertex,"true")
+    else:
+        print(vertex,"False")
+        print(minD[vertex],mind)"""
+
 #print(x.adjList,x.weightList,"yes")
-y = x.undirected()
-print(y.adjList,y.weightList)
-
+#y = x.undirected()
+#print(y.adjList,y.weightList)
+#_,m = Dijkstra(x,1)
+#print(m)
 """print(x.adjList,x.weightList,"--")
-
+minDistance(x)
 x = x.undirected()
 validatePositiveWeight(x,exception=False,warning=True)
-print(x.adjList,x.weightList,"--")
-print(MSTKruskal(x))
-Djikstra(x,1)"""
+print(x.adjList,x.weightList,"--")"""
+#print(MSTKruskal(x))
+"""Dijkstra(x,1)"""
 #print(x.adjList)
 #validateUndirected(x.unDirected())
 #x.addEdge(2,5)
