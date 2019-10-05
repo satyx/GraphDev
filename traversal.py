@@ -1,6 +1,8 @@
+"""Graph traversal implementation."""
 from validate import *
 
 def DFSUtility(obj,vertex,visited,subGraph):
+    """Utility function for Depth First Search Algorithm."""
     visited[vertex] = True
     subGraph.append(vertex)
     for nxtVertex in obj.adjList[vertex]:
@@ -8,7 +10,9 @@ def DFSUtility(obj,vertex,visited,subGraph):
             continue
         DFSUtility(obj,nxtVertex,visited,subGraph)
 
+
 def DFS(obj,vertex,visited=dict()):
+    """Implementation of Depth First Search Algorithm."""
     validateVertex(vertex,obj.vertexList)
     #order = []
     #visited = dict()
@@ -18,18 +22,10 @@ def DFS(obj,vertex,visited=dict()):
 
     DFSUtility(obj,vertex,visited,subGraph)
     return subGraph
-    """order.append(subGraph)
-
-    for ver in visited.keys():
-        if visited[ver]:
-            continue
-        subGraph=[]
-        DFSUtility(obj,ver,visited,subGraph)
-        order.append(subGraph)
-    return order"""
 
 
 def BFSUtility(obj,visited,vertex):
+    """Utility function for Breadth First Search Algorithm."""
     stack = []
     subGraph = []
     stack.insert(0,vertex)
@@ -45,6 +41,7 @@ def BFSUtility(obj,visited,vertex):
 
 
 def BFS(obj,vertex):
+    """Implementation of Breadth First Search Algorithm."""
     validateVertex(vertex,obj.vertexList)
     order = []
     visited = dict()
@@ -58,6 +55,5 @@ def BFS(obj,vertex):
             continue
         order.append(BFSUtility(obj,visited,ver))
     return order
-
 
 

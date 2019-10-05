@@ -1,7 +1,9 @@
+"""Miscellaneous functions using Graph Data Structure."""
 from validate import *
 from properties import *
 
 def TSortUtility(obj,vertex,visited,stack):
+    """Utility function for Topological Sorting."""
     for nbrVertex in obj.adjList[vertex]:
         if visited[nbrVertex]:
             continue
@@ -9,8 +11,8 @@ def TSortUtility(obj,vertex,visited,stack):
         TSortUtility(obj,nbrVertex,visited,stack)
     stack.append(vertex)    
 
-
 def TSort(obj):
+    """Topological Sorting."""
     validateTSort(obj)
     visited = dict()
     stack = []
@@ -34,14 +36,18 @@ def TSort(obj):
 
 
 def MSTKruskal(obj):
+    """Returns a minimum spanning tree using Kruskal's Algorithm with Union by Rank heuristic."""
     validateConnected(obj)
     validateUndirected(obj)
 
     def find(parent,vertex):
+        """Utility function for union by rank heuristics."""
         if parent[vertex]==vertex:
             return vertex
         return find(parent,parent[vertex])
-    def union(parent, rank, x, y): 
+
+    def union(parent, rank, x, y):
+        """Utility function for union by rank heuristics.""" 
         xroot = find(parent, x) 
         yroot = find(parent, y)
         
@@ -51,6 +57,7 @@ def MSTKruskal(obj):
             parent[yroot] = xroot
 
     def Cycle(edge,parent):
+        """Cycle detection in the Graph."""
         if find(parent,edge[0])==find(parent,edge[1]):
             return True
         if parent[edge[1]]==edge[1]:
@@ -91,9 +98,11 @@ def MSTKruskal(obj):
     return MST
 
 def Dijkstra(obj,source):
+    """Determination of minimum distance between vertex using Dijkstra Algorithm."""
     validatePositiveWeight(obj)
 
     def minDistVertex(minDist,sptSet):
+        """Return minimum distance between vertices."""
         minD = float("inf")
 
         for vertex in minDist:
@@ -101,7 +110,6 @@ def Dijkstra(obj,source):
                 minVertex = vertex
                 minD = minDist[vertex]
         return minVertex
-
 
     sptSet = dict()
     minDist = dict()
@@ -126,6 +134,7 @@ def Dijkstra(obj,source):
 
 
 def bellmanFord(obj,source):
+    """Determination of minimum distance between vertices using Bellman Ford Algorithm."""
     validatePositiveWeight(obj)
     n = CountVertices(obj)
     minDist = dict()
@@ -143,6 +152,8 @@ def bellmanFord(obj,source):
     return minDist
 
 def minDistance(obj,source=None,dest=None):
+    """Generic function for determination of minimum distance between
+    vertices for increasing rubustness and user-friendliness."""
     if validatePositiveWeight(obj,exception=False):
         if source!=None:
             minD,_ = Dijkstra(obj,source)
@@ -155,7 +166,6 @@ def minDistance(obj,source=None,dest=None):
     for vertex in obj.vertexList:
         minDist[vertex] = dict()
 
-
     for vertex in obj.vertexList:
         for nbrVertex in obj.vertexList:
             if vertex == nbrVertex:
@@ -165,11 +175,13 @@ def minDistance(obj,source=None,dest=None):
                     minDist[vertex][nbrVertex] = obj.weightList[vertex][obj.adjList[vertex].index(nbrVertex)]
                 except:
                     minDist[vertex][nbrVertex] = float("inf")
+    
     for intermediate in obj.vertexList:
         for source in obj.vertexList:
             for dest in obj.vertexList:
                 if minDist[source][intermediate]+minDist[intermediate][dest]<minDist[source][dest]:
                     minDist[source][dest] = minDist[source][intermediate]+minDist[intermediate][dest]
+    
     print(minDist)
     if source!=None:
         if dest!=None:

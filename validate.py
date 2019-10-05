@@ -1,8 +1,12 @@
+"""Implementation functions for validation of various attribues of the Graph."""
+
 import numbers
 import warnings
 from errors import *
+from traversal import DFS
 
 def validateVertex(vertex,vertexList,msg="",exception = True,warning=False):
+    """Validation of vertex's presence in the vertex list."""
     if vertex not in vertexList:
         if warning:
             warnings.warn("Invalid vertex {}.{}".format(vertex,msg))
@@ -11,7 +15,9 @@ def validateVertex(vertex,vertexList,msg="",exception = True,warning=False):
         else:
             return False
     return True
+
 def validateWeight(w,msg="",exception = True,warning=False):
+    """Validation of edge weight type."""
     if not (isinstance(w,numbers.Number)):
         if warning:
             warnings.warn("Invalid Weight. {}".format(msg))
@@ -22,6 +28,7 @@ def validateWeight(w,msg="",exception = True,warning=False):
         return True
 
 def validateEdge(v1,v2,w,vertexList,msg="",exception = True,warning=False):
+    """Validation of edges."""
     try:
         validateVertex(v1,vertexList,msg,exception = exception, warning = warning )
     except:
@@ -52,11 +59,8 @@ def validateEdge(v1,v2,w,vertexList,msg="",exception = True,warning=False):
     return True
 
 def validateGraph(obj,msg="",exception = True,warning = False):
-    #try:                                   No Need to Check Vertex validity as it basically checks the presence of vertex in the vertexList
-    #    for vertex in obj.vertexList:
-    #        validateVertex(vertex)
-    #except :
-    #    raise InvalidGraph(msg = "Vertex {} is Invalid. ".format(vertex)+msg)
+    """Validation of all the attributes of the Graph."""
+    # No Need to Check Vertex validity separately
     try:
         for vertex in obj.adjList:
             for nbrVertex in obj.adjList[vertex]:
@@ -66,7 +70,7 @@ def validateGraph(obj,msg="",exception = True,warning = False):
 
 
 def validateCyclic(obj,msg="",exception = True,warning=False):
-
+    """Validation of cyclic nature of the Graph."""
     def validateCyclicUtility(obj,vertex,visited,stack):        #Utility Function
         for nbrVertex in obj.adjList[vertex]:
             if stack[nbrVertex]:
@@ -106,6 +110,7 @@ def validateCyclic(obj,msg="",exception = True,warning=False):
     return True
 
 def validateDirected(obj,msg="",exception = True,warning=False):
+    """Validation of directed nature of the Graph."""
     directed = False
     for vertex in obj.adjList:
         for nbrVertex in obj.adjList[vertex]:
@@ -130,7 +135,8 @@ def validateDirected(obj,msg="",exception = True,warning=False):
     return True             
 
 def validateTSort(obj,msg="",exception = True,warning=False):
-    if validateCyclic(obj,exception=False):							#To detect self loop this validation has been kept prior to validateDirected
+    """Validation of pre-requisites for Topological Sorting."""
+    if validateCyclic(obj,exception=False):		#To detect self loop this validation has been kept prior to validateDirected
         if warning:
             warnings.warn("The Graph is Cyclic.{}".format(msg))
         elif exception:
@@ -146,11 +152,8 @@ def validateTSort(obj,msg="",exception = True,warning=False):
             return False
     return True
 
-
-
-
-from traversal import DFS
 def validateConnected(obj,msg="",exception = True,warning=False):
+    """Validation of connectivity of the Graph."""
     visited1 = dict()
     visited2 = dict()
     for vertex in obj.vertexList:
@@ -173,6 +176,7 @@ def validateConnected(obj,msg="",exception = True,warning=False):
     return True
                 
 def validateWeaklyConnected(obj,msg="",exception = True,warning=False):
+    """Validation of weakly connectivity of the Graph."""
     if not validateConnected(obj.undirected(),False):
         if warning:
             warnings.warn("NOT a Weakly Connected Graph. {}".format(msg))
@@ -184,6 +188,7 @@ def validateWeaklyConnected(obj,msg="",exception = True,warning=False):
     
 
 def validateUndirected(obj,msg="",exception = True, warning = False):
+    """Validation of Undirectional nature of the Graph."""
     unDir = True
     for vertex in obj.adjList:
         for nbrVertex in obj.adjList[vertex]:
@@ -202,6 +207,7 @@ def validateUndirected(obj,msg="",exception = True, warning = False):
     return True
 
 def validatePositiveWeight(obj,msg="",exception = True, warning = False):
+    """Validation of the absence of negative edge weights."""
     detectNegative = False
     for vertex in obj.weightList:
         for weight in obj.weightList[vertex]:

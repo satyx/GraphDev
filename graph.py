@@ -1,20 +1,21 @@
+"""Definition of classes for Directional and Undirectional Graph."""
 import numbers
 from validate import *
-from traversal import *
-from miscellaneous import *
-from properties import *
 from errors import *
 
 class Graph:
-
+    """Class for a generic directed graph."""
     def modifyWeight(self,i,j,weight=0):
+        """Weight addition."""
         self.addEdge(i,j,weight)
 
     def addVertex(self,ver):
+        """Vertex Addition."""
         self.vertex.add(ver)
         self.vertexCount+=1
 
     def addEdge(self,i,j,weight=0):
+        """Edge addition."""
         validateEdge(i,j,weight,self.vertexList,"Check the Edge List")
         try:
             try:
@@ -49,14 +50,12 @@ class Graph:
             self.weightList[i] = list([0])
             
     def undirected(self):
+        """Returns instance of the an undirected graph with same attributes."""
         undirectedGraph = unGraph(self.vertexList,self.adjList,self.weightList)
         return undirectedGraph
-        #self.vertexList = unGraph.vertexList
-        #self.adjList = unGraph.adjList
-        #self.weightList = unGraph.weightList
-        #del unGraph
 
     def reverse(self):
+        """Reverses the edge direction."""
         tempAdjList = self.adjList.copy()
         tempWeightList = self.weightList.copy()
 
@@ -72,16 +71,12 @@ class Graph:
         del tempAdjList
         del tempWeightList
         
-        
-
     def __init__(self,vertexList=set(),adjList=dict(),weightList=dict()):
         self.vertexList = set(vertexList)
         self.vertexCount = len(self.vertexList)
 
         for vertex, neighborhood in adjList.items():
             adjList[vertex] = list(set(neighborhood))
-
-
 
         for vertex in self.vertexList:
             if vertex not in adjList.keys():
@@ -95,7 +90,6 @@ class Graph:
             if vertex not in self.adjList.keys():
                 self.adjList[vertex]=[]
 
-
         for (vertex, nbrWeightList) in weightList.items():
             validateVertex(vertex,self.vertexList,"Check Weight List")
             for nbrEdgeWeight in nbrWeightList:
@@ -106,8 +100,6 @@ class Graph:
         self.weightList = dict()
         for vertex in adjList.keys():
             self.weightList[vertex] = [0 for conVertex in adjList[vertex]]
-
-
             
         for vertex in self.adjList:
             for (index,nbrVertex) in enumerate(self.adjList[vertex]):
@@ -130,11 +122,10 @@ class Graph:
                     break
 
 
-
-            
-
 class unGraph(Graph):
+    """Class for a generic undirectional graph with 'Graph' as base class."""
     def addEdge(self,i,j,weight=0):
+        """Edge addition."""
         super().addEdge(i,j,weight)
         super().addEdge(j,i,weight)
 
@@ -154,12 +145,9 @@ class unGraph(Graph):
             for nbrEdgeWeight in nbrWeightList:
                 validateWeight(nbrEdgeWeight,"Check Weight List")
 
-        
         for vertex,neighborhood in adjList.items():
             for nbrVertex in neighborhood:
                 self.addEdge(vertex,nbrVertex,0)
-                
-                #self.addEdge(nbrVertex,vertex,0)
                 self.edgeCount += 1
                 try:
                     assert weightList[vertex][adjList[vertex].index(nbrVertex)]==weightList[nbrVertex][adjList[nbrVertex].index(vertex)]
@@ -182,11 +170,9 @@ class unGraph(Graph):
                     raise InvalidWeightList(vertex)
         except:
             raise InvalidWeightList(vertex)
-        #print("check",self.adjList,weightList)
 
         for vertex,neighborhood in self.adjList.items():
-            for nbrVertex in neighborhood:
-                
+            for nbrVertex in neighborhood:                
                 ind_vertex = self.adjList[nbrVertex].index(vertex)
                 ind_nbrVertex = self.adjList[vertex].index(nbrVertex)
                 try:
@@ -206,8 +192,7 @@ class unGraph(Graph):
             loop_var = 0
             while(loop_var<len(self.weightList[vertex])-1):
                 swapped = False
-                pos = 0
-                
+                pos = 0                
                 while(pos<len(self.weightList[vertex])-1-loop_var):
                     if(self.weightList[vertex][pos]>self.weightList[vertex][pos+1]):
                         self.weightList[vertex][pos],self.weightList[vertex][pos+1] = self.weightList[vertex][pos+1],self.weightList[vertex][pos]
@@ -218,54 +203,3 @@ class unGraph(Graph):
                 if not swapped:
                     break
                 loop_var += 1
-                
-                
-#x = Graph([1,2,3,5,4,6],{1:[2,3,5],2:[1,4],3:[4],4:[5,2],5:[2,1,6]},{1:[5,-1,11],2:[5,7],5:[11,0,8]})
-#x = Graph([1,2,3],{1:[2,3],2:[1],3:[1]},{1:[5,7],3:[7]})
-#x = Graph([1,2,3],{1:[2],2:[3]},{1:[4]})
-#print(minDistance(x,1,2))
-#print(x.weightList)
-#validateGraph(x)
-#minD = minDistance(x,1,4)
-#print(minD)
-"""for vertex in x.vertexList:
-    mind = bellmanFord(x,vertex)
-    if mind == minD[vertex]:
-        print(vertex,"true")
-    else:
-        print(vertex,"False")
-        print(minD[vertex],mind)"""
-
-#print(x.adjList,x.weightList,"yes")
-#y = x.undirected()
-#print(y.adjList,y.weightList)
-#_,m = Dijkstra(x,1)
-#print(m)
-"""print(x.adjList,x.weightList,"--")
-minDistance(x)
-x = x.undirected()
-validatePositiveWeight(x,exception=False,warning=True)
-print(x.adjList,x.weightList,"--")"""
-#print(MSTKruskal(x))
-"""Dijkstra(x,1)"""
-#print(x.adjList)
-#validateUndirected(x.unDirected())
-#x.addEdge(2,5)
-#x.modifyWeight(2,1,10)
-#x.addEdge(1,2,8)
-#print(CountRegions(x))
-#x = Graph([0,1,2,3,4,5],{2:[1],3:[1],4:[2,0],5:[3]})
-#print(x.adjList,x.weightList)
-#print(x.adjList)
-#x.reverse()
-#print(x.adjList,x.weightList)
-
-#print(x.adjList,x.weightList) 
-#print(DFS(x,2))
-#print(TSort(x))
-
-#validateTSort(x,exception=False,warning=True)
-#print(x.adjList)
-#print("Components:",len(Components(x.unDirectional())))
-#print("Components:",len(Components(x)))
-#print(x.adjList,x.weightList)
