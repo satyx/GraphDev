@@ -2,3 +2,5 @@ testing.py
 testing2.py
 status.txt
 __pycache__/
+count_char.py
+cycleDetect.py
