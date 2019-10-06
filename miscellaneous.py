@@ -42,13 +42,13 @@ def MSTKruskal(obj):
     validateUndirected(obj)
 
     def find(parent,vertex):
-        """Utility function for union by rank heuristics."""
+        """Utility function FIND for union by rank heuristics."""
         if parent[vertex]==vertex:
             return vertex
         return find(parent,parent[vertex])
 
     def union(parent, rank, x, y):
-        """Utility function for union by rank heuristics.""" 
+        """Utility function UNION for union by rank heuristics.""" 
         xroot = find(parent, x) 
         yroot = find(parent, y)
         
@@ -146,6 +146,7 @@ def bellmanFord(obj,source):
         else:
             minDist[vertex] = float("inf")
 
+    #Comparing if minDist[i]+edge_weight(i,j)<minDist[j]
     for i in range(n-1):
         for vertex in obj.adjList:
             for nbrVertex in obj.adjList[vertex]:
@@ -159,7 +160,7 @@ def minDistance(obj,source=None,dest=None):
     vertices for increasing rubustness and user-friendliness."""
     if validatePositiveWeight(obj,exception=False):     #If dijkstra can be used.
         if source!=None:
-            minD,_ = Dijkstra(obj,source)
+            minD,_ = Dijkstra(obj,source)	#Also returns the parent to trace the path
             if dest!=None:
                 return minD[dest]
             return minD
