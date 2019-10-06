@@ -29,7 +29,8 @@ def validateWeight(w,msg="",exception = True,warning=False):
 
 def validateEdge(v1,v2,w,vertexList,msg="",exception = True,warning=False):
     """Validation of edges."""
-    try:
+
+    try:        #validating vertices
         validateVertex(v1,vertexList,msg,exception = exception, warning = warning )
     except:
         if warning:
@@ -38,7 +39,8 @@ def validateEdge(v1,v2,w,vertexList,msg="",exception = True,warning=False):
             raise InvalidEdge(v1,v1,v2,msg)
         else:
             return False
-    try:
+    
+    try:        #validating vertex
         validateVertex(v2,vertexList,msg,exception = exception, warning = warning)
     except:
         if warning:
@@ -47,7 +49,8 @@ def validateEdge(v1,v2,w,vertexList,msg="",exception = True,warning=False):
             raise InvalidEdge(v2,v1,v2,msg)
         else:
             return False
-    try:
+
+    try:    #validating edge weight
         validateWeight(w,msg,exception = exception, warning = warning)
     except:
         if warning:
@@ -61,7 +64,8 @@ def validateEdge(v1,v2,w,vertexList,msg="",exception = True,warning=False):
 def validateGraph(obj,msg="",exception = True,warning = False):
     """Validation of all the attributes of the Graph."""
     # No Need to Check Vertex validity separately
-    try:
+
+    try:    #validating edges
         for vertex in obj.adjList:
             for nbrVertex in obj.adjList[vertex]:
                 validateEdge(vertex,nbrVertex,obj.weightList[vertex][obj.adjList[vertex].index(nbrVertex)],obj.vertexList)
@@ -71,7 +75,7 @@ def validateGraph(obj,msg="",exception = True,warning = False):
 
 def validateCyclic(obj,msg="",exception = True,warning=False):
     """Validation of cyclic nature of the Graph."""
-    def validateCyclicUtility(obj,vertex,visited,stack):        #Utility Function
+    def validateCyclicUtility(obj,vertex,visited,stack):        #Utility Function. Applies DFS
         for nbrVertex in obj.adjList[vertex]:
             if stack[nbrVertex]:
                 return True
@@ -84,6 +88,8 @@ def validateCyclic(obj,msg="",exception = True,warning=False):
             stack[nbrVertex] = False
         return False
 
+
+    #During DFS, if a vertex is detected twice, it is a cyclic graph
     detected = False
     stack = dict()
     visited = dict()
@@ -111,7 +117,9 @@ def validateCyclic(obj,msg="",exception = True,warning=False):
 
 def validateDirected(obj,msg="",exception = True,warning=False):
     """Validation of directed nature of the Graph."""
-    directed = False
+    directed = False    #Flag
+
+    #If edge between i,j an j,i exists, it is directed
     for vertex in obj.adjList:
         for nbrVertex in obj.adjList[vertex]:
             try:                #Incase the edge (a,b) or (b,a) but not both doesn't exist
@@ -154,18 +162,21 @@ def validateTSort(obj,msg="",exception = True,warning=False):
 
 def validateConnected(obj,msg="",exception = True,warning=False):
     """Validation of connectivity of the Graph."""
+    #Applying DFS on a graph and it's reversed form.
+    #Even then, if some verticies are unvisited, its a unconnected
+
     visited1 = dict()
     visited2 = dict()
     for vertex in obj.vertexList:
         visited1[vertex] = False
         visited2[vertex] = False
     ver =   next(iter(obj.vertexList))  
-    DFS(obj,ver,visited1)
-    obj.reverse()
-    DFS(obj,ver,visited2)
-    obj.reverse()
-    #print("satyx",visited1,visited2)
-    for vertex in obj.vertexList:
+    DFS(obj,ver,visited1)       #DFS
+    obj.reverse()               #Reversing the graph
+    DFS(obj,ver,visited2)       #DFS on reversed graph
+    obj.reverse()               #Reversing it back.
+
+    for vertex in obj.vertexList:       
         if not visited1[vertex] and not visited2[vertex]:
             if warning:
                 warnings.warn("Disconnected Graph. {}".format(msg))
@@ -177,6 +188,7 @@ def validateConnected(obj,msg="",exception = True,warning=False):
                 
 def validateWeaklyConnected(obj,msg="",exception = True,warning=False):
     """Validation of weakly connectivity of the Graph."""
+    #If the undirected graph is connected then it is weakly connected.
     if not validateConnected(obj.undirected(),False):
         if warning:
             warnings.warn("NOT a Weakly Connected Graph. {}".format(msg))
@@ -189,7 +201,7 @@ def validateWeaklyConnected(obj,msg="",exception = True,warning=False):
 
 def validateUndirected(obj,msg="",exception = True, warning = False):
     """Validation of Undirectional nature of the Graph."""
-    unDir = True
+    unDir = True        #flag
     for vertex in obj.adjList:
         for nbrVertex in obj.adjList[vertex]:
             if vertex not in obj.adjList[nbrVertex] or obj.weightList[vertex][obj.adjList[vertex].index(nbrVertex)] != obj.weightList[nbrVertex][obj.adjList[nbrVertex].index(vertex)]:

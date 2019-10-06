@@ -13,7 +13,7 @@ def TSortUtility(obj,vertex,visited,stack):
 
 def TSort(obj):
     """Topological Sorting."""
-    validateTSort(obj)
+    validateTSort(obj)      #Validate the pre-requisite of topological sort
     visited = dict()
     stack = []
 
@@ -37,6 +37,7 @@ def TSort(obj):
 
 def MSTKruskal(obj):
     """Returns a minimum spanning tree using Kruskal's Algorithm with Union by Rank heuristic."""
+    #The graph must be connected and undirected
     validateConnected(obj)
     validateUndirected(obj)
 
@@ -66,13 +67,14 @@ def MSTKruskal(obj):
             parent[edge[0]] = edge[1]
         return False
 
+    #Making a list containing all the edges of graph in the form (v1,v2,weight)
     graphList = []
     for vertex in obj.adjList:
         for index,nbrVertex in enumerate(obj.adjList[vertex]):
             if (vertex,nbrVertex,obj.weightList[vertex][index]) not in graphList and (nbrVertex,vertex,obj.weightList[vertex][index]) not in graphList:
                 graphList.append((vertex,nbrVertex,obj.weightList[vertex][index]))
 
-    graphList = sorted(graphList,key=lambda item: item[2])
+    graphList = sorted(graphList,key=lambda item: item[2])  #sorting graph wrt the weight
     parent = dict()
     rank = dict()
     for edge in graphList:
@@ -98,8 +100,9 @@ def MSTKruskal(obj):
     return MST
 
 def Dijkstra(obj,source):
-    """Determination of minimum distance between vertex using Dijkstra Algorithm."""
-    validatePositiveWeight(obj)
+    """Determination of minimum distance between vertex using Dijkstra Algorithm.
+    Returns the distance  as well as the parent of each vertex to trace the path"""
+    validatePositiveWeight(obj)     #All the edge weights must be positive.
 
     def minDistVertex(minDist,sptSet):
         """Return minimum distance between vertices."""
@@ -111,9 +114,9 @@ def Dijkstra(obj,source):
                 minD = minDist[vertex]
         return minVertex
 
-    sptSet = dict()
-    minDist = dict()
-    parent = dict()
+    sptSet = dict()     #Spanning set containing all the visited covered 
+    minDist = dict()    
+    parent = dict() 
     for vertex in obj.vertexList:
         sptSet[vertex] = False
         minDist[vertex] = float("inf")
@@ -126,7 +129,6 @@ def Dijkstra(obj,source):
         vertex = minDistVertex(minDist,sptSet)
         sptSet[vertex] = True
         for index,nbrVertex in enumerate(obj.adjList[vertex]):
-            #print("nbr:",nbrVertex,vertex)
             if minDist[vertex]+obj.weightList[vertex][index]<minDist[nbrVertex]:
                 minDist[nbrVertex] = minDist[vertex]+obj.weightList[vertex][index]
                 parent[nbrVertex] = vertex
@@ -151,10 +153,11 @@ def bellmanFord(obj,source):
                     minDist[nbrVertex] = minDist[vertex]+obj.weightList[vertex][obj.adjList[vertex].index(nbrVertex)]
     return minDist
 
+
 def minDistance(obj,source=None,dest=None):
     """Generic function for determination of minimum distance between
     vertices for increasing rubustness and user-friendliness."""
-    if validatePositiveWeight(obj,exception=False):
+    if validatePositiveWeight(obj,exception=False):     #If dijkstra can be used.
         if source!=None:
             minD,_ = Dijkstra(obj,source)
             if dest!=None:
@@ -182,7 +185,6 @@ def minDistance(obj,source=None,dest=None):
                 if minDist[source][intermediate]+minDist[intermediate][dest]<minDist[source][dest]:
                     minDist[source][dest] = minDist[source][intermediate]+minDist[intermediate][dest]
     
-    print(minDist)
     if source!=None:
         if dest!=None:
             return minDist[source][dest]

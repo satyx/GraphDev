@@ -17,7 +17,7 @@ def Components(obj):
     for ver in obj.vertexList:
         visited[ver] = False
 
-    for vertex in obj.vertexList:
+    for vertex in obj.vertexList:   #Apply DFS with with all the vertex as source keeping the same dictionary 'visited'
         component = []
         if not visited[vertex]:
             ComponentsUtility(obj, vertex, visited, component)
