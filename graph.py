@@ -15,19 +15,20 @@ class Graph:
         self.vertexCount+=1
 
     def addEdge(self,i,j,weight=0):
-        """Edge addition."""
-        validateEdge(i,j,weight,self.vertexList,"Check the Edge List")
-        try:
+        """Edge addition if the edge is not present else modification
+        edge weight while maintaining the ascending order of the edgeList"""
+        validateEdge(i,j,weight,self.vertexList,"Check the Edge List")      #Validation of the edge to be added
+        try:        #Handling the error when edge i is not present
             try:
-                if j in self.adjList[i]:
+                if j in self.adjList[i]:    #Deletion of edge (i,j) if present
                     pos  = self.adjList[i].index(j)
                     del self.adjList[i][pos]
                     del self.weightList[i][pos]
             finally:
-                if len(self.weightList[i])==0 or weight>self.weightList[i][-1]:
+                if len(self.weightList[i])==0 or weight>self.weightList[i][-1]:     #When weightList is empty or last element of weightList is less than weight
                     self.weightList[i].append(weight)
                     self.adjList[i].append(j)
-                else:
+                else:       #Using Binary search to determine the location
                     l=0
                     r = len(self.weightList[i])-1
                     while(l<=r):
@@ -51,7 +52,7 @@ class Graph:
             
     def undirected(self):
         """Returns instance of the an undirected graph with same attributes."""
-        undirectedGraph = unGraph(self.vertexList,self.adjList,self.weightList)
+        undirectedGraph = unGraph(self.vertexList,self.adjList,self.weightList)     #Borrows the instance of 'unGraph'
         return undirectedGraph
 
     def reverse(self):
@@ -59,12 +60,13 @@ class Graph:
         tempAdjList = self.adjList.copy()
         tempWeightList = self.weightList.copy()
 
+        #Clearing the edge list and weight list
         for vertex in self.vertexList:
             self.weightList[vertex] = []
         for vertex in self.vertexList:
             self.adjList[vertex] = []
 
-        for vertex in tempAdjList:
+        for vertex in tempAdjList:  #Weight and edge addition
             for (index,nbrVertex) in enumerate(tempAdjList[vertex]):
                 self.addEdge(nbrVertex,vertex,tempWeightList[vertex][index])
                 self.addEdge(vertex,nbrVertex,tempWeightList[vertex][index])
@@ -72,20 +74,21 @@ class Graph:
         del tempWeightList
         
     def __init__(self,vertexList=set(),adjList=dict(),weightList=dict()):
-        self.vertexList = set(vertexList)
+        self.vertexList = set(vertexList)   #Declaration of vertex list
         self.vertexCount = len(self.vertexList)
 
-        for vertex, neighborhood in adjList.items():
+        #Preprocessing the adjList        
+        for vertex, neighborhood in adjList.items():    # Removal of duplicate vertices from the formal argument 'adjList'
             adjList[vertex] = list(set(neighborhood))
-
-        for vertex in self.vertexList:
+        for vertex in self.vertexList:      
             if vertex not in adjList.keys():
                 adjList[vertex]=[]
-        for (vertex,neighborhood) in adjList.items():
+        for (vertex,neighborhood) in adjList.items():      #Vertex validation
             validateVertex(vertex,self.vertexList,"Check the Edge List")
             for nbrVertex in neighborhood:
-                validateVertex(nbrVertex,self.vertexList,"Check the Edge List")
-        self.adjList = adjList
+                validateVertex(nbrVertex,self.vertexList,"Check the Edge List")     #Vertex validation
+
+        self.adjList = adjList 
         for vertex in self.vertexList:
             if vertex not in self.adjList.keys():
                 self.adjList[vertex]=[]
@@ -124,7 +127,7 @@ class Graph:
 
 class unGraph(Graph):
     """Class for a generic undirectional graph with 'Graph' as base class."""
-    def addEdge(self,i,j,weight=0):
+    def addEdge(self,i,j,weight=0):     #Overriding addEdge of parent class for including appropriate behaviour of the function
         """Edge addition."""
         super().addEdge(i,j,weight)
         super().addEdge(j,i,weight)
@@ -190,6 +193,8 @@ class unGraph(Graph):
                     pass
         for vertex,neighborhood in self.adjList.items():
             loop_var = 0
+
+            #Bubble Sorting
             while(loop_var<len(self.weightList[vertex])-1):
                 swapped = False
                 pos = 0                
