@@ -1,6 +1,5 @@
-testing.py
-testing2.py
+test_graphdev.py
 status.txt
-__pycache__/
+__pycache__
 count_char.py
 cycleDetect.py
